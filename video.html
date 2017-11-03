@@ -1,0 +1,80 @@
+<html>
+  <head>
+    <style>
+      video {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        min-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        z-index: -100;
+        transform: translateX(-50%) translateY(-50%);
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <script>
+
+      // Used to send messages back to parent
+      let parentSource;
+      let parentOrigin;
+      let videoTimeout;
+
+      window.onload = function() {
+        let searchParams = new URLSearchParams(window.location.search);
+        let video = searchParams.get("video");
+        let duration = searchParams.get("duration");
+        let extensionId = searchParams.get("id");
+
+        if (video && duration) {
+
+          // Add the video to the body
+          let videoElement = document.createElement("video");
+          document.querySelector("body").appendChild(videoElement);
+
+          // Listen for events
+          videoElement.addEventListener("ended", videoEnded);
+          videoTimeout = setTimeout(videoEnded, duration);
+
+          // Set the attributes properly
+          videoElement.type = "video/webm";
+          videoElement.src = video;
+          videoElement.play();
+        }
+
+      }
+
+      chrome.runtime.onMessageExternal.addListener(function(request, sender, sendResponse) {
+        console.log("got external message");
+      });
+
+      chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+        console.log("Got runtime message");
+        sendResponse("pong");
+      });
+
+      window.addEventListener("message", event => {
+        console.log("got message");
+        if (event.data.type === "dkevent-webviewinit") {
+          parentSource = event.source;
+          parentOrigin = event.origin;
+        }
+      }, false);
+
+      function videoEnded(event) {
+        console.log("Video Ended");
+        if (parentSource) {
+          console.log("sending message");
+          console.log(parentSource);
+          parentSource.postMessage({"method": "dkevent-adcomplete"}, parentOrigin);
+        }
+      }
+
+    </script>
+  </body>
+
+</html>

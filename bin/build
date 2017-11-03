@@ -1,0 +1,16 @@
+echo "Building Package"
+
+mkdir -p build
+
+ZIP_FILE=dk.zip
+
+rm -rf $ZIP_FILE
+zip -r $ZIP_FILE assets/
+zip -r $ZIP_FILE videos/
+zip -r $ZIP_FILE index.html
+zip -r $ZIP_FILE video.html
+zip -r $ZIP_FILE background.js
+zip -r $ZIP_FILE main.js
+zip -r $ZIP_FILE manifest.json
+
+mv $ZIP_FILE build/

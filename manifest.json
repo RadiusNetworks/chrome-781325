@@ -1,0 +1,33 @@
+{
+  "name": "Freezing Video Test",
+  "short_name": "Freezing Video Test",
+  "description": "Freezing Video Test",
+  "version": "1.0.7",
+  "manifest_version": 2,
+  "externally_connectable": {
+      "ids": ["*"],
+      "accepts_tls_channel": false
+  },
+  "app": {
+    "background": {
+      "scripts": ["background.js"]
+    }
+  },
+  "permissions": [
+    "power",
+    "webview"
+  ],
+  "offline_enabled": true,
+  "kiosk_enabled": true,
+  "kiosk_only": false,
+  "icons": { 
+    "16": "assets/icon-16.png", 
+    "128": "assets/icon-128.png" 
+  },
+  "webview": {
+    "partitions": [{
+      "name": "displaykit",
+      "accessible_resources": ["*"]
+    }]
+  }
+}
